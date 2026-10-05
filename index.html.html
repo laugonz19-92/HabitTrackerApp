@@ -509,55 +509,37 @@
   var data = loadData();
 
 function loadData() {
-      // 1. Carga inmediata por defecto para garantizar que la pantalla nunca quede en blanco
-      var localFallback = { habits: DEFAULT_HABITS.slice(), completions: {} };
-      
-      // 2. Consulta asíncrona a Firebase Firestore en segundo plano
-      docRef.get().then((doc) => {
-        if (doc.exists) {
-          var cloudData = doc.data();
-          if (cloudData && Array.isArray(cloudData.habits)) {
-            data = cloudData;
-            render(); // Refresca la interfaz con los datos reales de la nube
-          }
-        } else {
-          // Si el documento no existe en Firestore, lo inicializamos con los datos por defecto
-          data = localFallback;
-          saveData();
+  var defaultData = { habits: DEFAULT_HABITS.slice(), completions: {} };
+  
+  if (typeof db !== 'undefined') {
+    docRef.get().then((doc) => {
+      if (doc.exists) {
+        var cloudData = doc.data();
+        if (cloudData && Array.isArray(cloudData.habits)) {
+          data = cloudData;
+          render();
         }
-      }).catch((error) => {
-        console.error("Aviso de sincronización offline o error en Firebase: ", error);
-      });
-
-      return localFallback;
-    }
-
-    function saveData() {
-      // Escritura persistente en la nube de Google
-      docRef.set(data).then(() => {
-        showToast('Sincronizado en la nube');
-      }).catch((error) => {
-        console.error("Error al guardar en Firebase: ", error);
-      });
-    }
-      }).catch((error) => {
-        console.error("Error al cargar de Firebase: ", error);
-      });
-      return { habits: DEFAULT_HABITS.slice(), completions: {} };
-    }
-
-    function saveData() {
-      // Escritura persistente en la nube de Google
-      docRef.set(data).then(() => {
-        showToast('Sincronizado en la nube');
-      }).catch((error) => {
-        console.error("Error al guardar en Firebase: ", error);
-      });
-    } {
-    try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    } catch (e) { /* storage unavailable, state stays in memory for this session */ }
+      } else {
+        data = defaultData;
+        saveData();
+      }
+    }).catch((error) => {
+      console.error("Error al cargar de Firebase: ", error);
+    });
   }
+
+  return defaultData;
+}
+
+function saveData() {
+  if (typeof db !== 'undefined') {
+    docRef.set(data).then(() => {
+      showToast('Sincronizado en la nube');
+    }).catch((error) => {
+      console.error("Error al guardar en Firebase: ", error);
+    });
+  }
+}
 
   function showToast(msg) {
     var t = document.getElementById('toast');
