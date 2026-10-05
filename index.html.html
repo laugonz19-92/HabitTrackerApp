@@ -509,38 +509,46 @@
   var data = loadData();
 
 function loadData() {
-      var defaultData = { habits: DEFAULT_HABITS.slice(), completions: {} };
+      // 1. Cargar respaldo local de emergencia para evitar pantallas en blanco o pérdida al refrescar
+      var saved = window.localStorage.getItem('habit_tracker_data');
+      var localData = saved ? JSON.parse(saved) : { habits: DEFAULT_HABITS.slice(), completions: {} };
       
       if (typeof db !== 'undefined') {
-        // Escucha en tiempo real (Real-time sync entre PC y celular)
+        // 2. Escucha en tiempo real de Firebase Firestore
         docRef.onSnapshot((doc) => {
           if (doc.exists) {
             var cloudData = doc.data();
-            if (cloudData && Array.isArray(cloudData.habits)) {
+            if (cloudData && Array.isArray(cloudData.habits) && cloudData.habits.length > 0) {
               data = cloudData;
-              render(); // Actualiza la interfaz visual instantáneamente al haber cambios
+              // Sincronizar también con el almacenamiento local del dispositivo
+              window.localStorage.setItem('habit_tracker_data', JSON.stringify(data));
+              render(); // Actualiza la interfaz visual al instante
             }
           } else {
-            data = defaultData;
+            // Si la nube está vacía, subimos los datos locales iniciales
             saveData();
           }
         }, (error) => {
-          console.error("Error en la sincronización en tiempo real: ", error);
+          console.error("Aviso de sincronización Firebase: ", error);
         });
       }
 
-      return defaultData;
+      return localData;
     }
 
-function saveData() {
-  if (typeof db !== 'undefined') {
-    docRef.set(data).then(() => {
-      showToast('Sincronizado en la nube');
-    }).catch((error) => {
-      console.error("Error al guardar en Firebase: ", error);
-    });
-  }
-}
+    function saveData() {
+      // 1. Guardar de forma local inmediatamente para garantizar consistencia en el dispositivo
+      window.localStorage.setItem('habit_tracker_data', JSON.stringify(data));
+
+      // 2. Guardar en la nube de Firebase Firestore para sincronizar con el celular u otros equipos
+      if (typeof db !== 'undefined') {
+        docRef.set(data).then(() => {
+          showToast('Sincronizado en la nube');
+        }).catch((error) => {
+          console.error("Error al guardar en Firebase: ", error);
+        });
+      }
+    }
 
   function showToast(msg) {
     var t = document.getElementById('toast');
