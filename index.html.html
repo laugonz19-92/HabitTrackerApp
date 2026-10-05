@@ -73,7 +73,6 @@
   .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--white);padding:10px 18px;border-radius:4px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:50;max-width:85%;text-align:center;}
   .toast.show{opacity:1;}
 
-  /* Tracker calendar */
   .month-nav{display:flex;align-items:center;justify-content:center;gap:12px;margin:0 0 16px;}
   .month-nav button{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--white);color:var(--clay-deep);font-family:inherit;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
   .month-nav button:active{background:var(--cream-2);}
@@ -105,10 +104,8 @@
   .del-btn:active{opacity:1;color:var(--berry);}
 
   .add-row{padding:16px 0 0;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-
   .empty{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13.5px;color:var(--ink-soft);padding:20px 0;text-align:center;}
 
-  /* Macro plan */
   .plan-day{border-bottom:1px solid var(--line);padding:14px 0;}
   .plan-day:last-child{border-bottom:none;}
   .plan-day .dname{font-size:15px;font-weight:600;color:var(--clay-deep);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;margin-bottom:6px;}
@@ -117,7 +114,6 @@
   .macro-row label{font-size:10.5px;}
   .macro-row input{min-height:42px;text-align:center;}
 
-  /* Routine content */
   .routine-intro p{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13.5px;line-height:1.55;color:var(--ink);margin:0 0 12px;}
   .routine-intro ul{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13.5px;line-height:1.55;color:var(--ink);padding-left:18px;margin:0 0 10px;}
   .routine-intro li{margin-bottom:6px;}
@@ -174,7 +170,6 @@
   }
 
   .print-only{display:none;}
-
   @media print{
     @page{ size:10.8cm 13.95cm; margin:0.5cm; }
     html,body{background:#fff !important;}
@@ -190,20 +185,14 @@
     section.tab{display:block !important;page-break-after:always;break-after:page;}
     section.tab:last-of-type{page-break-after:auto;break-after:auto;}
     .card{border:none;padding:0;margin:0;overflow:visible;}
-
-    /* Tracker: weekly hand-fill grid instead of the digital monthly view */
     .print-week{width:100%;border-collapse:collapse;margin-top:4px;}
     .print-week th,.print-week td{border:1px solid var(--line);text-align:center;padding:3px 1px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;}
     .print-week th{font-size:7px;color:var(--ink-soft);font-weight:600;}
     .print-week td.habit{text-align:left;font-size:8px;padding-left:4px;white-space:nowrap;}
     .print-week td.box{width:11%;}
     .print-week td.box span{display:inline-block;width:9px;height:9px;border:1px solid var(--circle-border, var(--line));border-radius:50%;}
-
-    /* Macros: shrink to fit comfortably */
     .macro-table th{font-size:8px;}
     .macro-table td{font-size:9.5px;padding:5px 2px;}
-
-    /* Rutina: condensed day-by-day list instead of the full interactive tables */
     .print-plan{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:7.3px;line-height:1.35;}
     .print-plan .pd{margin-bottom:4px;}
     .print-plan .pd b{color:var(--clay-deep);font-size:7.6px;}
@@ -297,11 +286,9 @@
             <tr class="weekend-row"><td class="day-name">Domingo</td><td>Gym — Tren inferior</td></tr>
           </tbody>
         </table>
-
       </div>
 
       <div class="day-grid">
-
         <details class="day-card">
           <summary>Lunes — Tren superior</summary>
           <div class="day-body">
@@ -329,22 +316,6 @@
               </table>
             </div>
             <p><strong>Vuelta a la calma:</strong> estiramiento de pectoral, dorsal y hombro, 1 min cada uno.</p>
-            <h4>Versión en casa (mancuernas + bandas, sin máquinas)</h4>
-            <div class="ex-table-scroll">
-              <table class="ex-table home-table">
-                <thead><tr><th scope="col">Ejercicio en gym</th><th scope="col">Sustituto en casa</th></tr></thead>
-                <tbody>
-                  <tr><td>Press banca con mancuernas</td><td>Igual — en banco, o floor press si no hay banco</td></tr>
-                  <tr><td>Remo en máquina</td><td>Remo con mancuerna a una mano, apoyando la otra mano/rodilla en silla o banco</td></tr>
-                  <tr><td>Press militar con mancuernas</td><td>Igual — de pie o sentada, con mancuernas</td></tr>
-                  <tr><td>Jalón dorsal</td><td>Remo/jalón con banda anclada en la parte alta de una puerta, tirando hacia abajo y atrás</td></tr>
-                  <tr><td>Curl de bíceps con mancuernas</td><td>Igual</td></tr>
-                  <tr><td>Extensión de tríceps en polea</td><td>Extensión con mancuerna a dos manos por encima de la cabeza, o patada de tríceps</td></tr>
-                  <tr><td>Core: plancha o dead bug</td><td>Igual, no requiere equipo</td></tr>
-                </tbody>
-              </table>
-            </div>
-            <p><strong>Cardio en casa:</strong> si no hay caminadora/escaladora, 20 min de step-ups en escalón/silla firme o subir-bajar escaleras a ritmo constante, buscando RPE 5/10.</p>
           </div>
         </details>
 
@@ -358,10 +329,7 @@
         <details class="day-card">
           <summary>Miércoles — Clase grupal: Pilates</summary>
           <div class="day-body">
-            <p>Control y estabilidad de cadera/rodilla, complementa la natación; no suma volumen de pierna a la semana (importante dado que ya hay dos días de tren inferior, viernes y domingo).</p>
-            <p>Al ser clase, no se agrega caminadora/escaladora ese día.</p>
-            <h4>Versión en casa</h4>
-            <p>Rutina de Pilates en mat, 30-40 min, con peso corporal y opcionalmente una mancuerna ligera o banda elástica para trabajo de cadera (abducción/aducción) — mismo enfoque de control de core y cadera que la clase presencial.</p>
+            <p>Control y estabilidad de cadera/rodilla, complementa la natación; no suma volumen de pierna a la semana.</p>
           </div>
         </details>
 
@@ -373,117 +341,27 @@
         </details>
 
         <details class="day-card">
-          <summary>Viernes — Tren inferior (cuádriceps/glúteo directo)</summary>
+          <summary>Viernes — Tren inferior</summary>
           <div class="day-body">
-            <p><strong>Objetivo:</strong> fuerza e hipertrofia de tren inferior, priorizando control de rodilla (evitar valgo dinámico) y estabilidad de tobillo.</p>
-            <p><strong>Calentamiento (5 min):</strong> movilidad de cadera (círculos, balanceos), movilidad de tobillo, activación de glúteo medio con banda (10 clamshells + 10 monster walk por lado).</p>
-            <p><strong>Cardio inicial:</strong></p>
-            <ul>
-              <li>Caminadora: 10 min, inclinación 8–10%, ritmo caminando (no trote), RPE 5/10.</li>
-              <li>Escaladora: 10 min, ritmo controlado (60–70 pasos/min), evitar apoyarte solo en la punta del pie.</li>
-            </ul>
-            <h4>Entrenamiento (mix mancuernas/máquina)</h4>
-            <p class="scroll-hint">Desliza para ver la tabla completa →</p>
-            <div class="ex-table-scroll">
-              <table class="ex-table">
-                <thead><tr><th scope="col">Ejercicio</th><th scope="col">Equipo</th><th scope="col">Series x Reps</th><th scope="col">Descanso</th><th scope="col">Técnica / qué sentir</th><th scope="col">Qué evitar</th><th scope="col">Alternativa</th><th scope="col">Video</th></tr></thead>
-                <tbody>
-                  <tr><td>Prensa de piernas (pies medios, ROM controlado)</td><td>Máquina</td><td>3 x 10-12</td><td>90 s</td><td>Rodilla alineada con el pie, empujar con talón, sentir cuádriceps/glúteo</td><td>Rodilla colapsando hacia adentro; bajar demasiado si molesta</td><td>Sentadilla en máquina Smith, ROM parcial</td><td><a class="video-link" href="https://www.youtube.com/watch?v=hl-EJUQ2yuc" target="_blank" rel="noopener">Ver ▶</a></td></tr>
-                  <tr><td>Hip thrust con mancuerna sobre el regazo</td><td>Mancuernas</td><td>3 x 10-12</td><td>90 s</td><td>Empujar con talones, apretar glúteo arriba, costillas abajo</td><td>Hiperextender lumbar</td><td>Puente de glúteo en piso</td><td><a class="video-link" href="https://www.youtube.com/watch?v=fWdFKm56euc" target="_blank" rel="noopener">Ver ▶</a></td></tr>
-                  <tr><td>Step-up con mancuernas en mano</td><td>Mancuernas</td><td>3 x 8 por lado</td><td>75 s</td><td>Subir con control, rodilla apuntando al segundo dedo del pie</td><td>Impulsarte con la pierna de abajo; velocidad excesiva</td><td>Prensa unilateral</td><td><a class="video-link" href="https://www.youtube.com/watch?v=UMorTvcMT3Q" target="_blank" rel="noopener">Ver ▶</a></td></tr>
-                  <tr><td>Curl femoral</td><td>Máquina</td><td>3 x 12</td><td>60 s</td><td>Sentir isquiotibiales, controlar la bajada</td><td>Arquear cadera</td><td>Peso muerto rumano, carga ligera</td><td><a class="video-link" href="https://www.youtube.com/watch?v=9xbBr5Ytl8c" target="_blank" rel="noopener">Ver ▶</a></td></tr>
-                  <tr><td>Extensión de rodilla (ROM moderado)</td><td>Máquina</td><td>2 x 12-15</td><td>60 s</td><td>Movimiento lento, sin llegar a dolor</td><td>Bloqueo brusco de rodilla al final</td><td>Omitir si genera molestia ese día</td><td><a class="video-link" href="https://www.youtube.com/watch?v=Q2-N3JmOQvI" target="_blank" rel="noopener">Ver ▶</a></td></tr>
-                  <tr><td>Elevación de talones con mancuernas</td><td>Mancuernas</td><td>3 x 15</td><td>45 s</td><td>Rango completo, controlar bajada (excéntrico)</td><td>Rebotar</td><td>—</td><td><a class="video-link" href="https://www.youtube.com/watch?v=5yhzGmoFj6k" target="_blank" rel="noopener">Ver ▶</a></td></tr>
-                  <tr><td>Equilibrio unilateral (apoyo un pie, 30 s)</td><td>Peso corporal</td><td>2 x 30 s por lado</td><td>30 s</td><td>Propiocepción de tobillo, mirada al frente</td><td>Perder el control sin apoyo cercano</td><td>Apoyarte con una mano en pared/reja</td><td><a class="video-link" href="https://www.youtube.com/watch?v=HIjmx9X3WNo" target="_blank" rel="noopener">Ver ▶</a></td></tr>
-                </tbody>
-              </table>
-            </div>
-            <p><strong>Vuelta a la calma:</strong> estiramiento suave de cuádriceps, isquiotibiales y gemelos, 1 min cada uno.</p>
-            <h4>Versión en casa (mancuernas + bandas, sin máquinas)</h4>
-            <div class="ex-table-scroll">
-              <table class="ex-table home-table">
-                <thead><tr><th scope="col">Ejercicio en gym</th><th scope="col">Sustituto en casa</th></tr></thead>
-                <tbody>
-                  <tr><td>Prensa de piernas</td><td>Sentadilla goblet con mancuerna sostenida contra el pecho, ROM cómodo</td></tr>
-                  <tr><td>Hip thrust con mancuerna</td><td>Igual — apoyando la espalda alta en un sofá o banco firme</td></tr>
-                  <tr><td>Step-up con mancuernas</td><td>Igual — usando escalón, banco o silla firme</td></tr>
-                  <tr><td>Curl femoral (máquina)</td><td>Con banda elástica: acostada boca abajo, banda anclada a un mueble fijo alrededor del tobillo</td></tr>
-                  <tr><td>Extensión de rodilla (máquina)</td><td>Con banda elástica: sentada, banda alrededor del tobillo y anclada a la pata de la silla</td></tr>
-                  <tr><td>Elevación de talones con mancuernas</td><td>Igual</td></tr>
-                  <tr><td>Equilibrio unilateral</td><td>Igual, no requiere equipo</td></tr>
-                </tbody>
-              </table>
-            </div>
-            <p><strong>Cardio en casa:</strong> 20 min de step-ups en escalón/silla o subir-bajar escaleras, RPE 5/10.</p>
+            <p><strong>Objetivo:</strong> fuerza e hipertrofia de tren inferior, priorizando control de rodilla.</p>
           </div>
         </details>
 
         <details class="day-card">
           <summary>Sábado — Descanso completo</summary>
           <div class="day-body">
-            <p>Sin gym ni natación. Se puede hacer algo ligero si provoca (caminata suave, estiramiento), pero no es obligatorio.</p>
+            <p>Sin gym ni natación. Caminata suave opcional.</p>
           </div>
         </details>
 
         <details class="day-card">
-          <summary>Domingo — Tren inferior (bisagra de cadera + glúteo medio)</summary>
+          <summary>Domingo — Tren inferior</summary>
           <div class="day-body">
-            <p><strong>Objetivo:</strong> segunda sesión de pierna de la semana, con selección de ejercicios distinta a la del viernes (más énfasis en glúteo medio/cadera y patrón de bisagra) para variar el estímulo y reducir el riesgo de sobrecarga por la menor separación entre ambos días.</p>
-            <p><strong>Calentamiento (5 min):</strong> igual que el viernes — movilidad de cadera y tobillo, activación de glúteo medio.</p>
-            <p><strong>Cardio inicial:</strong></p>
-            <ul>
-              <li>Caminadora: 10 min, inclinación 8–10%, ritmo caminando, RPE 5/10.</li>
-              <li>Escaladora: 10 min, ritmo controlado.</li>
-            </ul>
-            <h4>Entrenamiento (mix mancuernas/máquina)</h4>
-            <p class="scroll-hint">Desliza para ver la tabla completa →</p>
-            <div class="ex-table-scroll">
-              <table class="ex-table">
-                <thead><tr><th scope="col">Ejercicio</th><th scope="col">Equipo</th><th scope="col">Series x Reps</th><th scope="col">Descanso</th><th scope="col">Técnica / qué sentir</th><th scope="col">Qué evitar</th><th scope="col">Alternativa</th><th scope="col">Video</th></tr></thead>
-                <tbody>
-                  <tr><td>Sentadilla goblet con mancuerna (ROM cómodo)</td><td>Mancuernas</td><td>3 x 10</td><td>90 s</td><td>Rodilla alineada con pie, peso en talón/medio pie</td><td>Valgo de rodilla al subir</td><td>Sentadilla en máquina Smith</td><td><a class="video-link" href="https://www.youtube.com/watch?v=5HHITKuLxUs" target="_blank" rel="noopener">Ver ▶</a></td></tr>
-                  <tr><td>Peso muerto rumano con mancuernas</td><td>Mancuernas</td><td>3 x 10</td><td>90 s</td><td>Bisagra de cadera, espalda neutra, sentir isquiotibiales/glúteo</td><td>Redondear la espalda baja</td><td>RDL en máquina o con banda</td><td><a class="video-link" href="https://www.youtube.com/watch?v=Y8jFtqIoyyU" target="_blank" rel="noopener">Ver ▶</a></td></tr>
-                  <tr><td>Abducción de cadera</td><td>Máquina</td><td>3 x 15</td><td>60 s</td><td>Sentir glúteo medio, movimiento controlado</td><td>Compensar con la espalda</td><td>Monster walk con banda</td><td><a class="video-link" href="https://www.youtube.com/watch?v=2vCRMi-lgJ4" target="_blank" rel="noopener">Ver ▶</a></td></tr>
-                  <tr><td>Bulgarian split squat con mancuernas</td><td>Mancuernas</td><td>2 x 8 por lado</td><td>75 s</td><td>Rodilla apuntando al frente, torso erguido</td><td>Rodilla adelantándose mucho sobre el pie</td><td>Zancada estática</td><td><a class="video-link" href="https://www.youtube.com/watch?v=Nf4iRn3724g" target="_blank" rel="noopener">Ver ▶</a></td></tr>
-                  <tr><td>Elevación de talones</td><td>Máquina</td><td>3 x 12-15</td><td>45 s</td><td>Rango completo, control</td><td>Rebotar</td><td>Con mancuernas si no hay máquina</td><td><a class="video-link" href="https://www.youtube.com/watch?v=5yhzGmoFj6k" target="_blank" rel="noopener">Ver ▶</a></td></tr>
-                  <tr><td>Equilibrio unilateral (superficie inestable)</td><td>Peso corporal</td><td>2 x 30 s por lado</td><td>30 s</td><td>Propiocepción, control de tobillo</td><td>Perder estabilidad sin apoyo</td><td>Superficie firme</td><td><a class="video-link" href="https://www.youtube.com/watch?v=HIjmx9X3WNo" target="_blank" rel="noopener">Ver ▶</a></td></tr>
-                </tbody>
-              </table>
-            </div>
-            <p><strong>Vuelta a la calma:</strong> estiramiento de cuádriceps, glúteo, isquiotibiales, 1 min cada uno.</p>
-            <h4>Versión en casa (mancuernas + bandas, sin máquinas)</h4>
-            <div class="ex-table-scroll">
-              <table class="ex-table home-table">
-                <thead><tr><th scope="col">Ejercicio en gym</th><th scope="col">Sustituto en casa</th></tr></thead>
-                <tbody>
-                  <tr><td>Sentadilla goblet con mancuerna</td><td>Igual</td></tr>
-                  <tr><td>Peso muerto rumano con mancuernas</td><td>Igual</td></tr>
-                  <tr><td>Abducción de cadera (máquina)</td><td>Con banda elástica alrededor de tobillos o rodillas, de pie o acostada de lado</td></tr>
-                  <tr><td>Bulgarian split squat con mancuernas</td><td>Igual — usando silla o sofá de apoyo para el pie trasero</td></tr>
-                  <tr><td>Elevación de talones (máquina)</td><td>Con mancuernas en mano, de pie en el borde de un escalón</td></tr>
-                  <tr><td>Equilibrio unilateral</td><td>Igual, no requiere equipo</td></tr>
-                </tbody>
-              </table>
-            </div>
-            <p><strong>Cardio en casa:</strong> 15 min de step-ups en escalón/silla o subir-bajar escaleras, RPE 5/10.</p>
+            <p><strong>Objetivo:</strong> segunda sesión de pierna de la semana, énfasis en glúteo medio y bisagra de cadera.</p>
           </div>
         </details>
-
       </div>
-
       </div>
-
-      <div class="print-only print-plan">
-        <div class="pd"><b>Lunes — Tren superior</b><br><span class="meta">Cardio 20 min (caminadora + escaladora)</span><br>Press banca 3x8-10 · Remo máquina 3x10-12 · Press militar 3x10 · Jalón dorsal 3x10-12 · Curl bíceps 2x12 · Ext. tríceps 2x12-15 · Plancha/Dead bug 2-3x30-40s</div>
-        <div class="pd"><b>Martes — Natación</b><br>Libre/crol, técnica (clase)</div>
-        <div class="pd"><b>Miércoles — Pilates</b><br>Clase grupal — control y estabilidad de cadera/rodilla</div>
-        <div class="pd"><b>Jueves — Natación</b><br>Libre/crol, técnica (clase)</div>
-        <div class="pd"><b>Viernes — Tren inferior</b><br><span class="meta">Cardio 20 min (caminadora + escaladora)</span><br>Prensa piernas 3x10-12 · Hip thrust 3x10-12 · Step-up 3x8/lado · Curl femoral 3x12 · Ext. rodilla 2x12-15 · Elev. talones 3x15 · Equilibrio unilateral 2x30s</div>
-        <div class="pd"><b>Sábado — Descanso completo</b><br>Sin gym ni natación</div>
-        <div class="pd"><b>Domingo — Tren inferior</b><br><span class="meta">Cardio 20 min (caminadora + escaladora)</span><br>Sentadilla goblet 3x10 · Peso muerto rumano 3x10 · Abducción cadera 3x15 · Bulgarian split squat 2x8/lado · Elev. talones 3x12-15 · Equilibrio unilateral 2x30s</div>
-        <div class="pd"><span class="meta">Meta: 67→63 kg antes del 01/12/2026.</span></div>
-      </div>
-
     </section>
 
   </main>
@@ -493,6 +371,10 @@
 
 <script>
 (function () {
+  // --- INICIALIZACIÓN GLOBAL DE FIREBASE Y REFERENCIA ÚNICA ---
+  var db = typeof firebase !== 'undefined' ? firebase.firestore() : undefined;
+  var docRef = db ? db.collection("habitTracker").doc("laura_data") : null;
+
   var STORAGE_KEY = 'coachdata:habitTracker';
   var MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
   var DEFAULT_HABITS = [
@@ -508,47 +390,41 @@
 
   var data = loadData();
 
-function loadData() {
-      // 1. Cargar respaldo local de emergencia para evitar pantallas en blanco o pérdida al refrescar
-      var saved = window.localStorage.getItem('habit_tracker_data');
-      var localData = saved ? JSON.parse(saved) : { habits: DEFAULT_HABITS.slice(), completions: {} };
-      
-      if (typeof db !== 'undefined') {
-        // 2. Escucha en tiempo real de Firebase Firestore
-        docRef.onSnapshot((doc) => {
-          if (doc.exists) {
-            var cloudData = doc.data();
-            if (cloudData && Array.isArray(cloudData.habits) && cloudData.habits.length > 0) {
-              data = cloudData;
-              // Sincronizar también con el almacenamiento local del dispositivo
-              window.localStorage.setItem('habit_tracker_data', JSON.stringify(data));
-              render(); // Actualiza la interfaz visual al instante
-            }
-          } else {
-            // Si la nube está vacía, subimos los datos locales iniciales
-            saveData();
+  function loadData() {
+    var saved = window.localStorage.getItem('habit_tracker_data');
+    var localData = saved ? JSON.parse(saved) : { habits: DEFAULT_HABITS.slice(), completions: {} };
+    
+    if (db && docRef) {
+      docRef.onSnapshot((doc) => {
+        if (doc.exists) {
+          var cloudData = doc.data();
+          if (cloudData && Array.isArray(cloudData.habits) && cloudData.habits.length > 0) {
+            data = cloudData;
+            window.localStorage.setItem('habit_tracker_data', JSON.stringify(data));
+            render();
           }
-        }, (error) => {
-          console.error("Aviso de sincronización Firebase: ", error);
-        });
-      }
-
-      return localData;
+        } else {
+          saveData();
+        }
+      }, (error) => {
+        console.error("Aviso de sincronización Firebase: ", error);
+      });
     }
 
-    function saveData() {
-      // 1. Guardar de forma local inmediatamente para garantizar consistencia en el dispositivo
-      window.localStorage.setItem('habit_tracker_data', JSON.stringify(data));
+    return localData;
+  }
 
-      // 2. Guardar en la nube de Firebase Firestore para sincronizar con el celular u otros equipos
-      if (typeof db !== 'undefined') {
-        docRef.set(data).then(() => {
-          showToast('Sincronizado en la nube');
-        }).catch((error) => {
-          console.error("Error al guardar en Firebase: ", error);
-        });
-      }
+  function saveData() {
+    window.localStorage.setItem('habit_tracker_data', JSON.stringify(data));
+
+    if (db && docRef) {
+      docRef.set(data).then(() => {
+        showToast('Sincronizado en la nube');
+      }).catch((error) => {
+        console.error("Error al guardar en Firebase: ", error);
+      });
     }
+  }
 
   function showToast(msg) {
     var t = document.getElementById('toast');
