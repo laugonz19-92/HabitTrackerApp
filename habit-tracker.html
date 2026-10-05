@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>Habit Tracker — Lau González</title>
+<style>
+  :root{
+    --cream:#F5E9E6;
+    --cream-2:#F0D9D3;
+    --ink:#3A121D;
+    --ink-soft:#8A5D63;
+    --clay:#EC7C2B;
+    --clay-deep:#A80E30;
+    --sage:#F8D9E6;
+    --sage-deep:#B15678;
+    --berry:#C22A3E;
+    --pear:#FBD9B8;
+    --pear-deep:#B65A12;
+    --line:#E8C9BE;
+    --white:#FFFDF9;
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  html{scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%;background:var(--cream);color-scheme:light;min-height:100%;}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{margin:0;background:var(--cream);color:var(--ink);font-family:'Iowan Old Style','Georgia',serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh;min-height:100dvh;}
+  .app{max-width:900px;margin:0 auto;padding:0 0 60px;padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);background:var(--cream);min-height:100vh;min-height:100dvh;}
+  .sans{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;}
+
+  header.top{padding:calc(28px + env(safe-area-inset-top)) 20px 18px;border-bottom:1px solid var(--line);}
+  header.top .eyebrow{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:12.5px;letter-spacing:.02em;color:var(--ink-soft);margin:0 0 6px;}
+  header.top h1{font-size:clamp(24px,4vw,32px);font-weight:400;margin:0;letter-spacing:.2px;}
+  header.top h1 em{font-style:italic;color:var(--clay-deep);}
+
+  nav.tabs{display:flex;gap:2px;padding:0 20px;border-bottom:1px solid var(--line);background:var(--cream);position:sticky;top:0;z-index:10;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+  nav.tabs::-webkit-scrollbar{display:none;}
+  nav.tabs button{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:none;border:none;padding:14px 12px;font-size:13.5px;color:var(--ink-soft);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;min-height:44px;}
+  nav.tabs button.active{color:var(--clay-deep);border-bottom:2px solid var(--clay-deep);font-weight:600;}
+
+  main{padding:24px 20px 10px;}
+  section.tab{display:none;}
+  section.tab.active{display:block;}
+
+  h2.section-title{font-size:20px;font-weight:400;margin:0 0 4px;}
+  p.section-sub{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px;color:var(--ink-soft);margin:0 0 18px;}
+
+  .card{background:var(--white);border:1px solid var(--line);border-radius:4px;padding:18px 18px;margin-bottom:14px;overflow:hidden;}
+  .card h3{font-size:16px;font-weight:600;margin:0 0 10px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--clay-deep);}
+  .card h4{font-size:12.5px;font-weight:700;margin:16px 0 8px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--ink-soft);text-transform:none;}
+
+  .card-group{display:block;}
+
+  button.primary{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--clay-deep);color:var(--white);border:none;padding:12px 16px;border-radius:4px;font-size:15px;font-weight:600;cursor:pointer;margin-top:4px;min-height:46px;}
+  button.primary:active{background:var(--clay);}
+  button.ghost{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:none;border:1px solid var(--line);color:var(--ink-soft);padding:8px 12px;border-radius:4px;font-size:12.5px;cursor:pointer;min-height:44px;}
+  @media (hover:hover){
+    button.ghost:hover{border-color:var(--clay);color:var(--clay-deep);}
+    nav.tabs button:not(.active):hover{color:var(--ink);}
+  }
+
+  input,select,textarea{width:100%;min-height:46px;padding:11px 10px;border:1px solid var(--line);border-radius:4px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:16px;line-height:1.3;background:var(--white);color:var(--ink);-webkit-appearance:none;appearance:none;}
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--clay);outline-offset:1px;}
+  label{display:block;font-size:11.5px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--ink-soft);margin-bottom:6px;}
+  button:focus-visible{outline:2px solid var(--clay);outline-offset:2px;}
+  button{font-family:inherit;}
+
+  .scroll-hint{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:10.5px;color:var(--ink-soft);margin:0 0 8px;}
+  @media(min-width:700px){ .scroll-hint{display:none;} }
+
+  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--white);padding:10px 18px;border-radius:4px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:50;max-width:85%;text-align:center;}
+  .toast.show{opacity:1;}
+
+  /* Tracker calendar */
+  .month-nav{display:flex;align-items:center;justify-content:center;gap:12px;margin:0 0 16px;}
+  .month-nav button{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--white);color:var(--clay-deep);font-family:inherit;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .month-nav button:active{background:var(--cream-2);}
+  .month-label{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;font-weight:600;color:var(--ink);min-width:150px;text-align:center;text-transform:capitalize;}
+
+  .grid-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  table{border-collapse:separate;border-spacing:0;width:100%;}
+  thead th{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-weight:600;font-size:11px;color:var(--ink-soft);padding:10px 4px 8px;text-align:center;white-space:nowrap;border-bottom:1px solid var(--line);}
+  th.habit-head,td.habit-cell{position:sticky;left:0;background:var(--white);z-index:2;text-align:left;padding-left:0;min-width:172px;max-width:172px;box-shadow:4px 0 6px -4px rgba(58,18,29,.18);}
+  th.habit-head{font-size:12.5px;letter-spacing:.02em;}
+  td.day-cell{text-align:center;padding:5px 3px;border-bottom:1px solid var(--line);}
+  td.day-cell.weekend,th.weekend{background:var(--cream-2);}
+  td.day-cell.today{background:var(--sage);}
+  th.today{color:var(--clay-deep);font-weight:700;position:relative;}
+  th.today::after{content:'';display:block;width:4px;height:4px;border-radius:50%;background:var(--clay-deep);margin:3px auto 0;}
+  tr:last-child td{border-bottom:none;}
+
+  .dot{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--line);background:var(--white);display:inline-block;cursor:pointer;padding:0;appearance:none;-webkit-appearance:none;transition:transform .1s ease,background .15s ease,border-color .15s ease;}
+  .dot:active{transform:scale(.88);}
+  .dot.done{background:var(--clay-deep);border-color:var(--clay-deep);}
+  .dot.today:not(.done){border-color:var(--clay);border-width:2px;}
+
+  .habit-row{display:flex;align-items:center;gap:4px;padding-right:4px;}
+  .habit-name{font-family:'Iowan Old Style','Georgia',serif;font-size:15px;color:var(--ink);background:transparent;border:none;border-bottom:1px dotted transparent;padding:4px 0;width:100%;min-width:0;flex:1 1 auto;min-height:auto;outline:none;overflow:hidden;text-overflow:ellipsis;}
+  .habit-name:focus{border-bottom-color:var(--clay);outline:none;}
+  .pct{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:11px;color:var(--clay-deep);font-weight:600;white-space:nowrap;flex:0 0 auto;min-width:26px;text-align:right;}
+  .del-btn{border:none;background:none;color:var(--ink-soft);font-size:14px;cursor:pointer;min-width:30px;min-height:30px;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;padding:0;opacity:.5;line-height:1;}
+  .del-btn:active{opacity:1;color:var(--berry);}
+
+  .add-row{padding:16px 0 0;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+
+  .empty{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13.5px;color:var(--ink-soft);padding:20px 0;text-align:center;}
+
+  /* Macro plan */
+  .plan-day{border-bottom:1px solid var(--line);padding:14px 0;}
+  .plan-day:last-child{border-bottom:none;}
+  .plan-day .dname{font-size:15px;font-weight:600;color:var(--clay-deep);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;margin-bottom:6px;}
+  .plan-sub{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:11px;color:var(--ink-soft);margin:8px 0 3px;}
+  .macro-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:8px;}
+  .macro-row label{font-size:10.5px;}
+  .macro-row input{min-height:42px;text-align:center;}
+
+  /* Routine content */
+  .routine-intro p{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13.5px;line-height:1.55;color:var(--ink);margin:0 0 12px;}
+  .routine-intro ul{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13.5px;line-height:1.55;color:var(--ink);padding-left:18px;margin:0 0 10px;}
+  .routine-intro li{margin-bottom:6px;}
+  .week-table{width:100%;border-collapse:separate;border-spacing:0;margin:6px 0 4px;}
+  .week-table.wide{min-width:480px;}
+  .macro-table{table-layout:fixed;}
+  .macro-table th,.macro-table td{padding:8px 3px;font-size:12px;text-align:center;white-space:nowrap;}
+  .macro-table th:first-child,.macro-table td:first-child{text-align:left;width:30%;padding-left:2px;}
+  .macro-table th:not(:first-child),.macro-table td:not(:first-child){width:17.5%;}
+  .macro-table td.day-name{font-size:12px;overflow:hidden;text-overflow:ellipsis;}
+  .macro-table th{font-size:9.5px;}
+  .week-table th{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:11px;color:var(--ink-soft);text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);}
+  .week-table td{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13.5px;padding:9px 10px;border-bottom:1px solid var(--line);}
+  .week-table tr:last-child td{border-bottom:none;}
+  .week-table tr.weekend-row td{background:var(--cream-2);}
+  .week-table td.day-name{font-weight:600;white-space:nowrap;}
+
+  details.day-card{border:1px solid var(--line);border-radius:4px;margin-bottom:10px;overflow:hidden;background:var(--white);}
+  details.day-card summary{cursor:pointer;list-style:none;padding:14px 16px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-weight:600;font-size:14.5px;color:var(--clay-deep);display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:44px;}
+  details.day-card summary::-webkit-details-marker{display:none;}
+  details.day-card summary::after{content:'+';color:var(--clay-deep);font-size:16px;flex-shrink:0;}
+  details.day-card[open] summary::after{content:'–';}
+  @media (hover:hover){ details.day-card summary:hover{background:var(--cream-2);} }
+  .day-body{padding:2px 16px 18px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13.5px;line-height:1.55;color:var(--ink);}
+  .day-body h4{font-size:12.5px;font-weight:700;margin:14px 0 6px;color:var(--ink-soft);}
+  .day-body p{margin:6px 0;}
+  .day-body ul{margin:6px 0;padding-left:18px;}
+  .day-body li{margin-bottom:4px;}
+
+  .ex-table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:8px 0 4px;}
+  .ex-table{border-collapse:collapse;width:100%;min-width:660px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;}
+  .ex-table.home-table{min-width:420px;}
+  .ex-table th{background:var(--cream-2);font-size:10.5px;color:var(--ink-soft);padding:7px 10px;text-align:left;white-space:nowrap;}
+  .ex-table td{padding:7px 10px;font-size:12.5px;border-bottom:1px solid var(--line);vertical-align:top;}
+  .ex-table tr:last-child td{border-bottom:none;}
+  .ex-table a.video-link{color:var(--clay-deep);text-decoration:none;font-weight:600;white-space:nowrap;}
+  @media (hover:hover){ .ex-table a.video-link:hover{text-decoration:underline;} }
+
+  @media(max-width:360px){
+    header.top h1{font-size:22px;}
+    .card{padding:15px;}
+  }
+  @media(min-width:700px){
+    .app{padding-left:24px;padding-right:24px;}
+    main{padding:28px 4px 10px;}
+    .card-group{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;}
+    .card-group .card{margin-bottom:0;}
+    .day-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:start;}
+    details.day-card{margin-bottom:0;}
+  }
+  @media(min-width:1000px){
+    .app{max-width:960px;}
+    header.top{padding-top:36px;}
+  }
+
+  .print-only{display:none;}
+
+  @media print{
+    @page{ size:10.8cm 13.95cm; margin:0.5cm; }
+    html,body{background:#fff !important;}
+    .app{max-width:none;padding:0;}
+    .no-print{display:none !important;}
+    .print-only{display:block !important;}
+    header.top{padding:0 0 6px;border-bottom:1px solid var(--line);}
+    header.top .eyebrow{font-size:8px;margin:0 0 2px;}
+    header.top h1{font-size:15px;letter-spacing:0;}
+    main{padding:8px 0 0;}
+    h2.section-title{font-size:12px;margin:0 0 2px;}
+    p.section-sub{font-size:8px;margin:0 0 6px;}
+    section.tab{display:block !important;page-break-after:always;break-after:page;}
+    section.tab:last-of-type{page-break-after:auto;break-after:auto;}
+    .card{border:none;padding:0;margin:0;overflow:visible;}
+
+    /* Tracker: weekly hand-fill grid instead of the digital monthly view */
+    .print-week{width:100%;border-collapse:collapse;margin-top:4px;}
+    .print-week th,.print-week td{border:1px solid var(--line);text-align:center;padding:3px 1px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;}
+    .print-week th{font-size:7px;color:var(--ink-soft);font-weight:600;}
+    .print-week td.habit{text-align:left;font-size:8px;padding-left:4px;white-space:nowrap;}
+    .print-week td.box{width:11%;}
+    .print-week td.box span{display:inline-block;width:9px;height:9px;border:1px solid var(--circle-border, var(--line));border-radius:50%;}
+
+    /* Macros: shrink to fit comfortably */
+    .macro-table th{font-size:8px;}
+    .macro-table td{font-size:9.5px;padding:5px 2px;}
+
+    /* Rutina: condensed day-by-day list instead of the full interactive tables */
+    .print-plan{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:7.3px;line-height:1.35;}
+    .print-plan .pd{margin-bottom:4px;}
+    .print-plan .pd b{color:var(--clay-deep);font-size:7.6px;}
+    .print-plan .pd .meta{color:var(--ink-soft);}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="top">
+    <p class="eyebrow">Lau González</p>
+    <h1>Habit <em>Tracker</em></h1>
+  </header>
+
+  <nav class="tabs no-print" role="tablist">
+    <button data-tab="tracker" class="active" role="tab" aria-selected="true" id="tabbtn-tracker" aria-controls="tab-tracker" type="button">Tracker</button>
+    <button data-tab="macros" role="tab" aria-selected="false" id="tabbtn-macros" aria-controls="tab-macros" type="button">Macros por día</button>
+    <button data-tab="rutina" role="tab" aria-selected="false" id="tabbtn-rutina" aria-controls="tab-rutina" type="button">Rutina</button>
+  </nav>
+
+  <main>
+
+    <section class="tab active" id="tab-tracker" role="tabpanel" aria-labelledby="tabbtn-tracker">
+      <h2 class="section-title">Registro de hábitos</h2>
+      <p class="section-sub">Marca el círculo cada día que cumplas el hábito.</p>
+
+      <div class="card no-print">
+        <div class="month-nav">
+          <button id="prevBtn" aria-label="Mes anterior" type="button">‹</button>
+          <div class="month-label" id="monthLabel" aria-live="polite">—</div>
+          <button id="nextBtn" aria-label="Mes siguiente" type="button">›</button>
+        </div>
+        <p class="scroll-hint">Desliza para ver todos los días →</p>
+        <div class="grid-scroll">
+          <table id="table"></table>
+        </div>
+        <div class="add-row">
+          <button class="ghost" id="addHabitBtn" type="button">+ Agregar hábito</button>
+          <button class="primary" id="saveBtn" type="button" style="margin-top:0;">Guardar</button>
+        </div>
+      </div>
+
+      <div class="print-only">
+        <table class="print-week">
+          <thead><tr><th>Hábito</th><th>L</th><th>M</th><th>M</th><th>J</th><th>V</th><th>S</th><th>D</th></tr></thead>
+          <tbody>
+            <tr><td class="habit">Alimentación</td><td class="box"><span></span></td><td class="box"><span></span></td><td class="box"><span></span></td><td class="box"><span></span></td><td class="box"><span></span></td><td class="box"><span></span></td><td class="box"><span></span></td></tr>
+            <tr><td class="habit">Ejercicio</td><td class="box"><span></span></td><td class="box"><span></span></td><td class="box"><span></span></td><td class="box"><span></span></td><td class="box"><span></span></td><td class="box"><span></span></td><td class="box"><span></span></td></tr>
+            <tr><td class="habit">Sueño</td><td class="box"><span></span></td><td class="box"><span></span></td><td class="box"><span></span></td><td class="box"><span></span></td><td class="box"><span></span></td><td class="box"><span></span></td><td class="box"><span></span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="tab" id="tab-macros" role="tabpanel" aria-labelledby="tabbtn-macros">
+      <h2 class="section-title">Macros por día</h2>
+      <p class="section-sub">Objetivo de calorías y macronutrientes por día de la semana.</p>
+      <div class="card">
+        <table class="week-table macro-table">
+          <thead><tr><th scope="col">Día</th><th scope="col">Kcal</th><th scope="col">Prot</th><th scope="col">Carb</th><th scope="col">Grasa</th></tr></thead>
+          <tbody>
+            <tr><td class="day-name">Lunes</td><td>1600</td><td>130</td><td>146</td><td>55</td></tr>
+            <tr><td class="day-name">Martes</td><td>1600</td><td>130</td><td>146</td><td>55</td></tr>
+            <tr><td class="day-name">Miércoles</td><td>1600</td><td>130</td><td>146</td><td>55</td></tr>
+            <tr><td class="day-name">Jueves</td><td>1600</td><td>130</td><td>146</td><td>55</td></tr>
+            <tr><td class="day-name">Viernes</td><td>1600</td><td>130</td><td>146</td><td>55</td></tr>
+            <tr class="weekend-row"><td class="day-name">Sábado</td><td>2100</td><td>120</td><td>248</td><td>70</td></tr>
+            <tr class="weekend-row"><td class="day-name">Domingo</td><td>1950</td><td>120</td><td>221</td><td>65</td></tr>
+          </tbody>
+        </table>
+        <p class="section-sub" style="margin:10px 0 0;">Todo en gramos, excepto Kcal.</p>
+      </div>
+    </section>
+
+    <section class="tab" id="tab-rutina" role="tabpanel" aria-labelledby="tabbtn-rutina">
+      <h2 class="section-title">Plan de entrenamiento</h2>
+      <p class="section-sub">Rutina completa de la semana — objetivo, ejercicios, técnica y video de cada uno.</p>
+
+      <div class="no-print">
+      <div class="card routine-intro">
+        <table class="week-table">
+          <thead><tr><th scope="col">Día</th><th scope="col">Sesión</th></tr></thead>
+          <tbody>
+            <tr><td class="day-name">Lunes</td><td>Gym — Tren superior</td></tr>
+            <tr><td class="day-name">Martes</td><td>Natación (libre/crol, técnica)</td></tr>
+            <tr><td class="day-name">Miércoles</td><td>Gym — Clase grupal (Pilates)</td></tr>
+            <tr><td class="day-name">Jueves</td><td>Natación (libre/crol, técnica)</td></tr>
+            <tr><td class="day-name">Viernes</td><td>Gym — Tren inferior</td></tr>
+            <tr class="weekend-row"><td class="day-name">Sábado</td><td>Descanso completo</td></tr>
+            <tr class="weekend-row"><td class="day-name">Domingo</td><td>Gym — Tren inferior</td></tr>
+          </tbody>
+        </table>
+
+      </div>
+
+      <div class="day-grid">
+
+        <details class="day-card">
+          <summary>Lunes — Tren superior</summary>
+          <div class="day-body">
+            <p><strong>Objetivo:</strong> fuerza e hipertrofia de tren superior (empuje, tracción, hombro), sin restricciones relevantes por rodilla/tobillo salvo en el cardio inicial.</p>
+            <p><strong>Calentamiento (5 min):</strong> movilidad de hombro (círculos, dislocaciones con banda), activación de escápula (band pull-apart 15 reps), 2 series ligeras de calentamiento del primer ejercicio.</p>
+            <p><strong>Cardio inicial:</strong></p>
+            <ul>
+              <li>Caminadora: 10 min, inclinación 8–10%, ritmo caminando (no trote), RPE 5/10.</li>
+              <li>Escaladora: 10 min, ritmo controlado (60–70 pasos/min).</li>
+            </ul>
+            <h4>Entrenamiento (mix mancuernas/máquina)</h4>
+            <p class="scroll-hint">Desliza para ver la tabla completa →</p>
+            <div class="ex-table-scroll">
+              <table class="ex-table">
+                <thead><tr><th scope="col">Ejercicio</th><th scope="col">Equipo</th><th scope="col">Series x Reps</th><th scope="col">Descanso</th><th scope="col">Técnica / qué sentir</th><th scope="col">Qué evitar</th><th scope="col">Alternativa</th><th scope="col">Video</th></tr></thead>
+                <tbody>
+                  <tr><td>Press banca con mancuernas</td><td>Mancuernas</td><td>3 x 8-10</td><td>90 s</td><td>Escápulas retraídas, bajar controlado, sentir pectoral</td><td>Arquear excesivamente lumbar</td><td>Press en máquina de pecho</td><td><a class="video-link" href="https://www.youtube.com/watch?v=jrDDz7x1Dpo" target="_blank" rel="noopener">Ver ▶</a></td></tr>
+                  <tr><td>Remo en máquina (agarre neutro)</td><td>Máquina</td><td>3 x 10-12</td><td>90 s</td><td>Llevar el codo hacia atrás, sentir espalda media</td><td>Usar impulso del cuerpo</td><td>Remo con mancuerna a una mano</td><td><a class="video-link" href="https://www.youtube.com/watch?v=DKDILwC5iRI" target="_blank" rel="noopener">Ver ▶</a></td></tr>
+                  <tr><td>Press militar con mancuernas</td><td>Mancuernas</td><td>3 x 10</td><td>75 s</td><td>Core activo, subir sin arquear lumbar</td><td>Arquear espalda para completar el rango</td><td>Press en máquina de hombro</td><td><a class="video-link" href="https://www.youtube.com/watch?v=WeCyPErNDxo" target="_blank" rel="noopener">Ver ▶</a></td></tr>
+                  <tr><td>Jalón dorsal (agarre ancho o neutro)</td><td>Máquina</td><td>3 x 10-12</td><td>75 s</td><td>Llevar codos hacia abajo y atrás, sentir dorsal</td><td>Tirar solo con brazos</td><td>Dominadas asistidas</td><td><a class="video-link" href="https://www.youtube.com/watch?v=EO9AmI-bu_0" target="_blank" rel="noopener">Ver ▶</a></td></tr>
+                  <tr><td>Curl de bíceps con mancuernas</td><td>Mancuernas</td><td>2 x 12</td><td>45 s</td><td>Controlar la bajada, codos fijos</td><td>Balancear el cuerpo</td><td>Curl en máquina/polea</td><td><a class="video-link" href="https://www.youtube.com/watch?v=72dihs2dEdc" target="_blank" rel="noopener">Ver ▶</a></td></tr>
+                  <tr><td>Extensión de tríceps en polea</td><td>Máquina</td><td>2 x 12-15</td><td>45 s</td><td>Codos pegados al cuerpo</td><td>Abrir los codos</td><td>Extensión con mancuerna a dos manos</td><td><a class="video-link" href="https://www.youtube.com/watch?v=bluq3g4XIWg" target="_blank" rel="noopener">Ver ▶</a></td></tr>
+                  <tr><td>Core: plancha o dead bug</td><td>Peso corporal</td><td>2-3 x 30-40 s / 10 por lado</td><td>45 s</td><td>Zona lumbar neutra, respirar</td><td>Dejar caer la cadera en plancha</td><td>—</td><td><a class="video-link" href="https://www.youtube.com/watch?v=nmX0DysvqcQ" target="_blank" rel="noopener">Plancha ▶</a><br><a class="video-link" href="https://www.youtube.com/watch?v=OUVY99ez0k0" target="_blank" rel="noopener">Dead bug ▶</a></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p><strong>Vuelta a la calma:</strong> estiramiento de pectoral, dorsal y hombro, 1 min cada uno.</p>
+            <h4>Versión en casa (mancuernas + bandas, sin máquinas)</h4>
+            <div class="ex-table-scroll">
+              <table class="ex-table home-table">
+                <thead><tr><th scope="col">Ejercicio en gym</th><th scope="col">Sustituto en casa</th></tr></thead>
+                <tbody>
+                  <tr><td>Press banca con mancuernas</td><td>Igual — en banco, o floor press si no hay banco</td></tr>
+                  <tr><td>Remo en máquina</td><td>Remo con mancuerna a una mano, apoyando la otra mano/rodilla en silla o banco</td></tr>
+                  <tr><td>Press militar con mancuernas</td><td>Igual — de pie o sentada, con mancuernas</td></tr>
+                  <tr><td>Jalón dorsal</td><td>Remo/jalón con banda anclada en la parte alta de una puerta, tirando hacia abajo y atrás</td></tr>
+                  <tr><td>Curl de bíceps con mancuernas</td><td>Igual</td></tr>
+                  <tr><td>Extensión de tríceps en polea</td><td>Extensión con mancuerna a dos manos por encima de la cabeza, o patada de tríceps</td></tr>
+                  <tr><td>Core: plancha o dead bug</td><td>Igual, no requiere equipo</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p><strong>Cardio en casa:</strong> si no hay caminadora/escaladora, 20 min de step-ups en escalón/silla firme o subir-bajar escaleras a ritmo constante, buscando RPE 5/10.</p>
+          </div>
+        </details>
+
+        <details class="day-card">
+          <summary>Martes — Natación</summary>
+          <div class="day-body">
+            <p>Sesión de club/clase — crol, técnica, según lo trabajado en las clases de martes y jueves.</p>
+          </div>
+        </details>
+
+        <details class="day-card">
+          <summary>Miércoles — Clase grupal: Pilates</summary>
+          <div class="day-body">
+            <p>Control y estabilidad de cadera/rodilla, complementa la natación; no suma volumen de pierna a la semana (importante dado que ya hay dos días de tren inferior, viernes y domingo).</p>
+            <p>Al ser clase, no se agrega caminadora/escaladora ese día.</p>
+            <h4>Versión en casa</h4>
+            <p>Rutina de Pilates en mat, 30-40 min, con peso corporal y opcionalmente una mancuerna ligera o banda elástica para trabajo de cadera (abducción/aducción) — mismo enfoque de control de core y cadera que la clase presencial.</p>
+          </div>
+        </details>
+
+        <details class="day-card">
+          <summary>Jueves — Natación</summary>
+          <div class="day-body">
+            <p>Sesión de club/clase — crol, técnica.</p>
+          </div>
+        </details>
+
+        <details class="day-card">
+          <summary>Viernes — Tren inferior (cuádriceps/glúteo directo)</summary>
+          <div class="day-body">
+            <p><strong>Objetivo:</strong> fuerza e hipertrofia de tren inferior, priorizando control de rodilla (evitar valgo dinámico) y estabilidad de tobillo.</p>
+            <p><strong>Calentamiento (5 min):</strong> movilidad de cadera (círculos, balanceos), movilidad de tobillo, activación de glúteo medio con banda (10 clamshells + 10 monster walk por lado).</p>
+            <p><strong>Cardio inicial:</strong></p>
+            <ul>
+              <li>Caminadora: 10 min, inclinación 8–10%, ritmo caminando (no trote), RPE 5/10.</li>
+              <li>Escaladora: 10 min, ritmo controlado (60–70 pasos/min), evitar apoyarte solo en la punta del pie.</li>
+            </ul>
+            <h4>Entrenamiento (mix mancuernas/máquina)</h4>
+            <p class="scroll-hint">Desliza para ver la tabla completa →</p>
+            <div class="ex-table-scroll">
+              <table class="ex-table">
+                <thead><tr><th scope="col">Ejercicio</th><th scope="col">Equipo</th><th scope="col">Series x Reps</th><th scope="col">Descanso</th><th scope="col">Técnica / qué sentir</th><th scope="col">Qué evitar</th><th scope="col">Alternativa</th><th scope="col">Video</th></tr></thead>
+                <tbody>
+                  <tr><td>Prensa de piernas (pies medios, ROM controlado)</td><td>Máquina</td><td>3 x 10-12</td><td>90 s</td><td>Rodilla alineada con el pie, empujar con talón, sentir cuádriceps/glúteo</td><td>Rodilla colapsando hacia adentro; bajar demasiado si molesta</td><td>Sentadilla en máquina Smith, ROM parcial</td><td><a class="video-link" href="https://www.youtube.com/watch?v=hl-EJUQ2yuc" target="_blank" rel="noopener">Ver ▶</a></td></tr>
+                  <tr><td>Hip thrust con mancuerna sobre el regazo</td><td>Mancuernas</td><td>3 x 10-12</td><td>90 s</td><td>Empujar con talones, apretar glúteo arriba, costillas abajo</td><td>Hiperextender lumbar</td><td>Puente de glúteo en piso</td><td><a class="video-link" href="https://www.youtube.com/watch?v=fWdFKm56euc" target="_blank" rel="noopener">Ver ▶</a></td></tr>
+                  <tr><td>Step-up con mancuernas en mano</td><td>Mancuernas</td><td>3 x 8 por lado</td><td>75 s</td><td>Subir con control, rodilla apuntando al segundo dedo del pie</td><td>Impulsarte con la pierna de abajo; velocidad excesiva</td><td>Prensa unilateral</td><td><a class="video-link" href="https://www.youtube.com/watch?v=UMorTvcMT3Q" target="_blank" rel="noopener">Ver ▶</a></td></tr>
+                  <tr><td>Curl femoral</td><td>Máquina</td><td>3 x 12</td><td>60 s</td><td>Sentir isquiotibiales, controlar la bajada</td><td>Arquear cadera</td><td>Peso muerto rumano, carga ligera</td><td><a class="video-link" href="https://www.youtube.com/watch?v=9xbBr5Ytl8c" target="_blank" rel="noopener">Ver ▶</a></td></tr>
+                  <tr><td>Extensión de rodilla (ROM moderado)</td><td>Máquina</td><td>2 x 12-15</td><td>60 s</td><td>Movimiento lento, sin llegar a dolor</td><td>Bloqueo brusco de rodilla al final</td><td>Omitir si genera molestia ese día</td><td><a class="video-link" href="https://www.youtube.com/watch?v=Q2-N3JmOQvI" target="_blank" rel="noopener">Ver ▶</a></td></tr>
+                  <tr><td>Elevación de talones con mancuernas</td><td>Mancuernas</td><td>3 x 15</td><td>45 s</td><td>Rango completo, controlar bajada (excéntrico)</td><td>Rebotar</td><td>—</td><td><a class="video-link" href="https://www.youtube.com/watch?v=5yhzGmoFj6k" target="_blank" rel="noopener">Ver ▶</a></td></tr>
+                  <tr><td>Equilibrio unilateral (apoyo un pie, 30 s)</td><td>Peso corporal</td><td>2 x 30 s por lado</td><td>30 s</td><td>Propiocepción de tobillo, mirada al frente</td><td>Perder el control sin apoyo cercano</td><td>Apoyarte con una mano en pared/reja</td><td><a class="video-link" href="https://www.youtube.com/watch?v=HIjmx9X3WNo" target="_blank" rel="noopener">Ver ▶</a></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p><strong>Vuelta a la calma:</strong> estiramiento suave de cuádriceps, isquiotibiales y gemelos, 1 min cada uno.</p>
+            <h4>Versión en casa (mancuernas + bandas, sin máquinas)</h4>
+            <div class="ex-table-scroll">
+              <table class="ex-table home-table">
+                <thead><tr><th scope="col">Ejercicio en gym</th><th scope="col">Sustituto en casa</th></tr></thead>
+                <tbody>
+                  <tr><td>Prensa de piernas</td><td>Sentadilla goblet con mancuerna sostenida contra el pecho, ROM cómodo</td></tr>
+                  <tr><td>Hip thrust con mancuerna</td><td>Igual — apoyando la espalda alta en un sofá o banco firme</td></tr>
+                  <tr><td>Step-up con mancuernas</td><td>Igual — usando escalón, banco o silla firme</td></tr>
+                  <tr><td>Curl femoral (máquina)</td><td>Con banda elástica: acostada boca abajo, banda anclada a un mueble fijo alrededor del tobillo</td></tr>
+                  <tr><td>Extensión de rodilla (máquina)</td><td>Con banda elástica: sentada, banda alrededor del tobillo y anclada a la pata de la silla</td></tr>
+                  <tr><td>Elevación de talones con mancuernas</td><td>Igual</td></tr>
+                  <tr><td>Equilibrio unilateral</td><td>Igual, no requiere equipo</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p><strong>Cardio en casa:</strong> 20 min de step-ups en escalón/silla o subir-bajar escaleras, RPE 5/10.</p>
+          </div>
+        </details>
+
+        <details class="day-card">
+          <summary>Sábado — Descanso completo</summary>
+          <div class="day-body">
+            <p>Sin gym ni natación. Se puede hacer algo ligero si provoca (caminata suave, estiramiento), pero no es obligatorio.</p>
+          </div>
+        </details>
+
+        <details class="day-card">
+          <summary>Domingo — Tren inferior (bisagra de cadera + glúteo medio)</summary>
+          <div class="day-body">
+            <p><strong>Objetivo:</strong> segunda sesión de pierna de la semana, con selección de ejercicios distinta a la del viernes (más énfasis en glúteo medio/cadera y patrón de bisagra) para variar el estímulo y reducir el riesgo de sobrecarga por la menor separación entre ambos días.</p>
+            <p><strong>Calentamiento (5 min):</strong> igual que el viernes — movilidad de cadera y tobillo, activación de glúteo medio.</p>
+            <p><strong>Cardio inicial:</strong></p>
+            <ul>
+              <li>Caminadora: 10 min, inclinación 8–10%, ritmo caminando, RPE 5/10.</li>
+              <li>Escaladora: 10 min, ritmo controlado.</li>
+            </ul>
+            <h4>Entrenamiento (mix mancuernas/máquina)</h4>
+            <p class="scroll-hint">Desliza para ver la tabla completa →</p>
+            <div class="ex-table-scroll">
+              <table class="ex-table">
+                <thead><tr><th scope="col">Ejercicio</th><th scope="col">Equipo</th><th scope="col">Series x Reps</th><th scope="col">Descanso</th><th scope="col">Técnica / qué sentir</th><th scope="col">Qué evitar</th><th scope="col">Alternativa</th><th scope="col">Video</th></tr></thead>
+                <tbody>
+                  <tr><td>Sentadilla goblet con mancuerna (ROM cómodo)</td><td>Mancuernas</td><td>3 x 10</td><td>90 s</td><td>Rodilla alineada con pie, peso en talón/medio pie</td><td>Valgo de rodilla al subir</td><td>Sentadilla en máquina Smith</td><td><a class="video-link" href="https://www.youtube.com/watch?v=5HHITKuLxUs" target="_blank" rel="noopener">Ver ▶</a></td></tr>
+                  <tr><td>Peso muerto rumano con mancuernas</td><td>Mancuernas</td><td>3 x 10</td><td>90 s</td><td>Bisagra de cadera, espalda neutra, sentir isquiotibiales/glúteo</td><td>Redondear la espalda baja</td><td>RDL en máquina o con banda</td><td><a class="video-link" href="https://www.youtube.com/watch?v=Y8jFtqIoyyU" target="_blank" rel="noopener">Ver ▶</a></td></tr>
+                  <tr><td>Abducción de cadera</td><td>Máquina</td><td>3 x 15</td><td>60 s</td><td>Sentir glúteo medio, movimiento controlado</td><td>Compensar con la espalda</td><td>Monster walk con banda</td><td><a class="video-link" href="https://www.youtube.com/watch?v=2vCRMi-lgJ4" target="_blank" rel="noopener">Ver ▶</a></td></tr>
+                  <tr><td>Bulgarian split squat con mancuernas</td><td>Mancuernas</td><td>2 x 8 por lado</td><td>75 s</td><td>Rodilla apuntando al frente, torso erguido</td><td>Rodilla adelantándose mucho sobre el pie</td><td>Zancada estática</td><td><a class="video-link" href="https://www.youtube.com/watch?v=Nf4iRn3724g" target="_blank" rel="noopener">Ver ▶</a></td></tr>
+                  <tr><td>Elevación de talones</td><td>Máquina</td><td>3 x 12-15</td><td>45 s</td><td>Rango completo, control</td><td>Rebotar</td><td>Con mancuernas si no hay máquina</td><td><a class="video-link" href="https://www.youtube.com/watch?v=5yhzGmoFj6k" target="_blank" rel="noopener">Ver ▶</a></td></tr>
+                  <tr><td>Equilibrio unilateral (superficie inestable)</td><td>Peso corporal</td><td>2 x 30 s por lado</td><td>30 s</td><td>Propiocepción, control de tobillo</td><td>Perder estabilidad sin apoyo</td><td>Superficie firme</td><td><a class="video-link" href="https://www.youtube.com/watch?v=HIjmx9X3WNo" target="_blank" rel="noopener">Ver ▶</a></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p><strong>Vuelta a la calma:</strong> estiramiento de cuádriceps, glúteo, isquiotibiales, 1 min cada uno.</p>
+            <h4>Versión en casa (mancuernas + bandas, sin máquinas)</h4>
+            <div class="ex-table-scroll">
+              <table class="ex-table home-table">
+                <thead><tr><th scope="col">Ejercicio en gym</th><th scope="col">Sustituto en casa</th></tr></thead>
+                <tbody>
+                  <tr><td>Sentadilla goblet con mancuerna</td><td>Igual</td></tr>
+                  <tr><td>Peso muerto rumano con mancuernas</td><td>Igual</td></tr>
+                  <tr><td>Abducción de cadera (máquina)</td><td>Con banda elástica alrededor de tobillos o rodillas, de pie o acostada de lado</td></tr>
+                  <tr><td>Bulgarian split squat con mancuernas</td><td>Igual — usando silla o sofá de apoyo para el pie trasero</td></tr>
+                  <tr><td>Elevación de talones (máquina)</td><td>Con mancuernas en mano, de pie en el borde de un escalón</td></tr>
+                  <tr><td>Equilibrio unilateral</td><td>Igual, no requiere equipo</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p><strong>Cardio en casa:</strong> 15 min de step-ups en escalón/silla o subir-bajar escaleras, RPE 5/10.</p>
+          </div>
+        </details>
+
+      </div>
+
+      </div>
+
+      <div class="print-only print-plan">
+        <div class="pd"><b>Lunes — Tren superior</b><br><span class="meta">Cardio 20 min (caminadora + escaladora)</span><br>Press banca 3x8-10 · Remo máquina 3x10-12 · Press militar 3x10 · Jalón dorsal 3x10-12 · Curl bíceps 2x12 · Ext. tríceps 2x12-15 · Plancha/Dead bug 2-3x30-40s</div>
+        <div class="pd"><b>Martes — Natación</b><br>Libre/crol, técnica (clase)</div>
+        <div class="pd"><b>Miércoles — Pilates</b><br>Clase grupal — control y estabilidad de cadera/rodilla</div>
+        <div class="pd"><b>Jueves — Natación</b><br>Libre/crol, técnica (clase)</div>
+        <div class="pd"><b>Viernes — Tren inferior</b><br><span class="meta">Cardio 20 min (caminadora + escaladora)</span><br>Prensa piernas 3x10-12 · Hip thrust 3x10-12 · Step-up 3x8/lado · Curl femoral 3x12 · Ext. rodilla 2x12-15 · Elev. talones 3x15 · Equilibrio unilateral 2x30s</div>
+        <div class="pd"><b>Sábado — Descanso completo</b><br>Sin gym ni natación</div>
+        <div class="pd"><b>Domingo — Tren inferior</b><br><span class="meta">Cardio 20 min (caminadora + escaladora)</span><br>Sentadilla goblet 3x10 · Peso muerto rumano 3x10 · Abducción cadera 3x15 · Bulgarian split squat 2x8/lado · Elev. talones 3x12-15 · Equilibrio unilateral 2x30s</div>
+        <div class="pd"><span class="meta">Meta: 67→63 kg antes del 01/12/2026.</span></div>
+      </div>
+
+    </section>
+
+  </main>
+</div>
+
+<div class="toast no-print" id="toast"></div>
+
+<script>
+(function () {
+  var STORAGE_KEY = 'coachdata:habitTracker';
+  var MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  var DEFAULT_HABITS = [
+    { id: 'h1', name: 'Alimentación' },
+    { id: 'h2', name: 'Ejercicio' },
+    { id: 'h3', name: 'Sueño' }
+  ];
+
+  var today = new Date();
+  var defaultYear = today.getFullYear();
+  if (today.getMonth() + 1 > 10) defaultYear += 1;
+  var state = { year: defaultYear, month: 10 };
+
+  var data = loadData();
+
+  function loadData() {
+    try {
+      var raw = window.localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        var parsed = JSON.parse(raw);
+        if (parsed && Array.isArray(parsed.habits)) return parsed;
+      }
+    } catch (e) { /* storage unavailable or empty, fall back to defaults */ }
+    return { habits: DEFAULT_HABITS.slice(), completions: {} };
+  }
+
+  function saveData() {
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    } catch (e) { /* storage unavailable, state stays in memory for this session */ }
+  }
+
+  function showToast(msg) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(t._hideTimer);
+    t._hideTimer = setTimeout(function () { t.classList.remove('show'); }, 2200);
+  }
+
+  function monthKey(y, m) { return y + '-' + String(m).padStart(2, '0'); }
+  function daysInMonth(y, m) { return new Date(y, m, 0).getDate(); }
+  function isWeekend(y, m, d) {
+    var wd = new Date(y, m - 1, d).getDay();
+    return wd === 0 || wd === 6;
+  }
+  function uid() { return 'h' + Date.now() + Math.floor(Math.random() * 1000); }
+  function escapeAttr(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+  }
+
+  function getCompletedDays(habitId) {
+    var key = monthKey(state.year, state.month);
+    var monthData = data.completions[key];
+    if (!monthData || !monthData[habitId]) return [];
+    return monthData[habitId];
+  }
+
+  function toggleDay(habitId, day) {
+    var key = monthKey(state.year, state.month);
+    if (!data.completions[key]) data.completions[key] = {};
+    if (!data.completions[key][habitId]) data.completions[key][habitId] = [];
+    var arr = data.completions[key][habitId];
+    var idx = arr.indexOf(day);
+    if (idx >= 0) arr.splice(idx, 1);
+    else arr.push(day);
+    saveData();
+    render();
+  }
+
+  function addHabit() {
+    var h = { id: uid(), name: '' };
+    data.habits.push(h);
+    saveData();
+    render();
+    var input = document.querySelector('[data-habit-input="' + h.id + '"]');
+    if (input) input.focus();
+  }
+
+  function renameHabit(id, name) {
+    var h = data.habits.find(function (x) { return x.id === id; });
+    if (h) { h.name = name; saveData(); }
+  }
+
+  function deleteHabit(id) {
+    data.habits = data.habits.filter(function (x) { return x.id !== id; });
+    Object.keys(data.completions).forEach(function (k) {
+      delete data.completions[k][id];
+    });
+    saveData();
+    render();
+  }
+
+  function changeMonth(delta) {
+    var m = state.month + delta;
+    var y = state.year;
+    if (m > 12) { m = 1; y++; }
+    if (m < 1) { m = 12; y--; }
+    state.month = m; state.year = y;
+    render();
+  }
+
+  function render() {
+    document.getElementById('monthLabel').textContent = MESES[state.month - 1] + ' ' + state.year;
+
+    var table = document.getElementById('table');
+    var nDays = daysInMonth(state.year, state.month);
+    var now = new Date();
+    var isCurrentMonth = (now.getFullYear() === state.year && now.getMonth() + 1 === state.month);
+    var todayDate = isCurrentMonth ? now.getDate() : -1;
+    var html = '';
+
+    html += '<thead><tr>';
+    html += '<th class="habit-head" scope="col">Hábitos</th>';
+    for (var d = 1; d <= nDays; d++) {
+      var wknd = isWeekend(state.year, state.month, d);
+      var isToday = d === todayDate;
+      html += '<th class="' + (wknd ? 'weekend' : '') + (isToday ? ' today' : '') + '" scope="col">' + d + '</th>';
+    }
+    html += '</tr></thead>';
+
+    html += '<tbody>';
+    if (data.habits.length === 0) {
+      html += '<tr><td class="habit-cell" colspan="' + (nDays + 1) + '"><div class="empty">Agrega tu primer hábito para empezar a marcar los días.</div></td></tr>';
+    }
+    data.habits.forEach(function (h) {
+      var completed = getCompletedDays(h.id);
+      var pct = nDays > 0 ? Math.round((completed.length / nDays) * 100) : 0;
+      var habitLabel = h.name ? h.name : 'hábito sin nombre';
+
+      html += '<tr>';
+      html += '<td class="habit-cell">';
+      html += '<div class="habit-row">';
+      html += '<input class="habit-name" data-habit-input="' + h.id + '" value="' + escapeAttr(h.name) + '" placeholder="Nombre del hábito" aria-label="Nombre del hábito">';
+      html += '<span class="pct">' + pct + '%</span>';
+      html += '<button class="del-btn" data-del="' + h.id + '" aria-label="Eliminar ' + escapeAttr(habitLabel) + '" type="button">✕</button>';
+      html += '</div>';
+      html += '</td>';
+
+      for (var day = 1; day <= nDays; day++) {
+        var done = completed.indexOf(day) >= 0;
+        var wknd2 = isWeekend(state.year, state.month, day);
+        var isToday2 = day === todayDate;
+        html += '<td class="day-cell' + (wknd2 ? ' weekend' : '') + (isToday2 ? ' today' : '') + '">';
+        html += '<button type="button" class="dot' + (done ? ' done' : '') + (isToday2 ? ' today' : '') + '" data-toggle="' + h.id + '" data-day="' + day + '" aria-pressed="' + done + '" aria-label="' + escapeAttr(habitLabel) + ', día ' + day + ', ' + (done ? 'cumplido' : 'no cumplido') + '"></button>';
+        html += '</td>';
+      }
+      html += '</tr>';
+    });
+    html += '</tbody>';
+
+    table.innerHTML = html;
+
+    table.querySelectorAll('[data-toggle]').forEach(function (el) {
+      el.addEventListener('click', function () {
+        toggleDay(el.getAttribute('data-toggle'), parseInt(el.getAttribute('data-day'), 10));
+      });
+    });
+    table.querySelectorAll('[data-habit-input]').forEach(function (el) {
+      el.addEventListener('input', function () {
+        renameHabit(el.getAttribute('data-habit-input'), el.value);
+      });
+      el.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') { e.preventDefault(); el.blur(); }
+      });
+    });
+    table.querySelectorAll('[data-del]').forEach(function (el) {
+      el.addEventListener('click', function () {
+        var id = el.getAttribute('data-del');
+        var h = data.habits.find(function (x) { return x.id === id; });
+        var label = (h && h.name) ? '"' + h.name + '"' : 'este hábito';
+        if (window.confirm('¿Eliminar ' + label + ' y todo su historial? Esta acción no se puede deshacer.')) {
+          deleteHabit(id);
+        }
+      });
+    });
+  }
+
+  function showTab(name) {
+    document.querySelectorAll('nav.tabs button').forEach(function (btn) {
+      var active = btn.getAttribute('data-tab') === name;
+      btn.classList.toggle('active', active);
+      btn.setAttribute('aria-selected', active ? 'true' : 'false');
+    });
+    document.querySelectorAll('section.tab').forEach(function (s) {
+      s.classList.toggle('active', s.id === 'tab-' + name);
+    });
+  }
+
+  function openTodayRoutine() {
+    var DIAS_SEMANA = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    var todayName = DIAS_SEMANA[new Date().getDay()];
+    document.querySelectorAll('#tab-rutina details.day-card').forEach(function (det) {
+      var summary = det.querySelector('summary');
+      if (summary && summary.textContent.indexOf(todayName) === 0) {
+        det.setAttribute('open', '');
+      }
+    });
+  }
+
+  document.getElementById('prevBtn').addEventListener('click', function () { changeMonth(-1); });
+  document.getElementById('nextBtn').addEventListener('click', function () { changeMonth(1); });
+  document.getElementById('addHabitBtn').addEventListener('click', addHabit);
+  document.getElementById('saveBtn').addEventListener('click', function () {
+    saveData();
+    showToast('Guardado');
+  });
+  document.querySelectorAll('nav.tabs button').forEach(function (btn) {
+    btn.addEventListener('click', function () { showTab(btn.getAttribute('data-tab')); });
+  });
+
+  render();
+  openTodayRoutine();
+})();
+</script>
+</body>
+</html>
